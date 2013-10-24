@@ -1,42 +1,37 @@
 ---
 ---
-
 # Publish the activity to the portal
 
-1. Install the Chrome app postman:
-https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm
-Note there are 2 versions of postman, the newest version 0.9 that runs outside the browser as a chrome package app. And version 0.8 that runs in the browser as a privileged tab.
-You want 0.8 so you can log into the portal normally and then post to it.
-https://chrome.google.com/webstore/detail/postman-rest-client-packa/fhbjgbiflinjbdggehcddcbncdddomop
+1. Install the Chrome app [Postman](https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm)
 2. log into the portal http://localhost:3000
-3. POST the file `activity_description.json`
+3. POST the contents of the file `activity_description.json`
 4. to the portal route
 
         http://localhost:3000/external_activities/publish/v2
 
-Note this can be improved by adding CORS support to the portal, so if you are logged in as an admin on the portal then any web site can publish activities to the portal. It would nice to restrict this some how to authorized domains though just to prevent any random site from doing this.
+## Notes
+There are two versions of postman, the newest version 0.9 that runs outside the browser as a chrome package app. And version 0.8 that runs in the browser as a privileged tab.
+You want 0.8 so you can log into the portal normally and then post to it with the same cookies from when you logged in.
 
-You might also be able to load the postman-collection.json file into postman which is pre-populated with the json and address.
+The publishing proces could be improved by adding CORS support to publishing parts of the portal, so if you are logged in as an admin on the portal then any web site can publish activities to the portal. It would be good to add a secret token to this, so it wouldn't be vunerable to CSRF
 
 # Run the activity from the portal and have it send results
 
-1. start the activity server
-To run this locally it is best for it to be running in a server. So it uses the gh pages server XXX 
-(I should make a different set of directions so this can be run from the github.io)
+1. start the activity server, it uses the gh-pages server jekyll
 
         bundle install
         jekyll serve --watch
 
 2. run the 'Cool Activity' published in the section above
+3. click Send Learner Data
 
-
-TODO
-browser page needs to parse the url that looks like this:
+## Notes
+The browser page is parsing the url that opens the activity to find the return url.
+The activity should be opened with a url something like this:
 
     activities.com/activity/1/sessions/?domain=http://www.example.com/&externalId=999&returnUrl=http://www.example.com/dataservice/external_activity_data/888
 
-to get the returnUrl
-so that as the student is running it then data can be sent to that URL that looks like this:
+The format of the data sent to the portal from the activity should look like this:
 
     [
        { "type": "open_response",
@@ -55,10 +50,5 @@ so that as the student is running it then data can be sent to that URL that look
        }
      ]
 
-Inorder to do that the rails app needs to support CORS on the post to that URL
-$.post('http://machineA:8081', {file_url: 'asfd'}, function(d){console.log(d)})
-need to inspect the headers sent by jquery with the post we might need to add them to
-CORS for example:
-Access-Control-Allow-Headers: x-requested-with
-
-
+Without changing the portal code a post to the returnUrl will go through but the browser will throw an error afterwards.
+There is a branch in the portal `wip-browser-activity`, which adds the CORS support to remove this error.
