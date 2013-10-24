@@ -1,0 +1,24 @@
+{
+  "type": "Activity",
+  "name": "Cool Activity",
+  "url": "http://localhost:4000/activity.html",
+  "launch_url": "http://localhost:4000/activity.html",
+  "description": "This activity does fun stuff.",
+  "sections": [
+    {
+      "name": "Cool Activity Section 1",
+      "pages": [
+        {
+          "name": "Cool Activity Page 1",
+          "elements": [
+            {
+              "type": "open_response",
+              "id": "1",
+              "prompt": "Do you like this activity?"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
